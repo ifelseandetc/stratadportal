@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="Stratad – minimal data layer for static sites, Hugo, and Node projects. CLI-first, typed, and refreshingly simple."
+    />
+    <title>Stratad · minimal data layer</title>
+    <!-- odd font for logo, plus clean system fonts for body -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #fefcf5;
+        background-image: radial-gradient(
+          circle at 10% 20%,
+          rgba(230, 245, 255, 0.4) 0%,
+          rgba(255, 245, 235, 0.2) 100%
+        );
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          Helvetica,
+          sans-serif;
+        color: #1a2a2f;
+        line-height: 1.4;
+        padding: 2rem 1.5rem;
+      }
+
+      .page {
+        max-width: 780px;
+        margin: 0 auto;
+        background: rgba(255, 255, 250, 0.85);
+        backdrop-filter: blur(2px);
+        border-radius: 3rem;
+        padding: 2rem 2rem 2.5rem;
+        box-shadow:
+          0 20px 40px -12px rgba(0, 0, 0, 0.08),
+          0 0 0 1px rgba(0, 0, 0, 0.02);
+        transition: all 0.2s ease;
+      }
+
+      /* text styled logo – odd, distinctive, monospace-meets-display */
+      .logo {
+        text-align: center;
+        margin-bottom: 0.75rem;
+      }
+      .logo-text {
+        font-family:
+          "Major Mono Display", "Courier New", "Andale Mono", monospace;
+        font-size: clamp(3rem, 10vw, 5rem);
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        background: linear-gradient(135deg, #1a3a3a 0%, #2b5e5e 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        text-shadow: 0 2px 3px rgba(0, 0, 0, 0.02);
+        display: inline-block;
+        padding: 0 0.2rem;
+      }
+      .latin-micro {
+        font-family: "Inter", monospace;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #5c7a7a;
+        background: #edf2f0;
+        display: inline-block;
+        padding: 0.2rem 0.7rem;
+        border-radius: 40px;
+        margin-top: 0.5rem;
+        font-weight: 500;
+      }
+
+      .subtitle {
+        text-align: center;
+        font-size: 1.4rem;
+        font-weight: 550;
+        color: #1f3b3b;
+        margin-top: 1.25rem;
+        margin-bottom: 0.75rem;
+        letter-spacing: -0.2px;
+        max-width: 85%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .witty-line {
+        text-align: center;
+        background: #eaf4e8;
+        padding: 0.7rem 1.2rem;
+        border-radius: 60px;
+        display: inline-block;
+        width: auto;
+        margin: 0.75rem auto 1.2rem;
+        font-size: 1rem;
+        font-weight: 500;
+        color: #2b5c3b;
+        backdrop-filter: blur(2px);
+        box-shadow:
+          inset 0 0 0 1px #ffffff80,
+          0 1px 2px rgba(0, 0, 0, 0.02);
+      }
+
+      .tagline-box {
+        text-align: center;
+        margin: 1rem 0 1.8rem;
+      }
+
+      .feature-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.7rem;
+        margin: 2rem 0 1.5rem;
+      }
+      .feature-chip {
+        background: #ffffffd9;
+        backdrop-filter: blur(2px);
+        border-radius: 60px;
+        padding: 0.4rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #1c4035;
+        box-shadow:
+          0 1px 3px rgba(0, 0, 0, 0.05),
+          0 0 0 1px #e2e9e4;
+        transition: all 0.1s ease;
+        font-family: "Inter", monospace;
+      }
+      .feature-chip:hover {
+        transform: translateY(-2px);
+        background: #ffffff;
+        border-color: #b9d0c4;
+      }
+
+      /* terminal / CLI preview */
+      .cli-preview {
+        background: #0c1c1c;
+        border-radius: 1.5rem;
+        margin: 2rem 0 1.8rem;
+        padding: 1.2rem 1.2rem;
+        box-shadow:
+          0 12px 22px -10px rgba(0, 0, 0, 0.2),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        font-family: "Fira Code", "JetBrains Mono", monospace;
+        font-size: 0.85rem;
+        overflow-x: auto;
+      }
+      .cli-line {
+        color: #c0f0e8;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        border-left: 2px solid #3a8c7a;
+        padding-left: 0.8rem;
+      }
+      .cli-prompt {
+        color: #94e0c0;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      .cli-command {
+        color: #f2e9c7;
+      }
+      .cli-output {
+        color: #bed4cf;
+        margin-left: 1rem;
+        margin-bottom: 0.7rem;
+        font-size: 0.8rem;
+      }
+      .comment {
+        color: #6b8c82;
+      }
+
+      .signup-area {
+        background: #f2f6f0;
+        border-radius: 2rem;
+        padding: 1.5rem 1.8rem;
+        margin: 2rem 0 1rem;
+        text-align: center;
+        border: 1px solid #e2eadf;
+      }
+      .signup-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: #1a3f35;
+      }
+      .inline-form {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+      .inline-form input {
+        flex: 2;
+        min-width: 200px;
+        background: white;
+        border: 1px solid #cdddd2;
+        border-radius: 60px;
+        padding: 0.8rem 1.2rem;
+        font-family: "Inter", sans-serif;
+        font-size: 0.9rem;
+        outline: none;
+        transition: all 0.2s;
+      }
+      .inline-form input:focus {
+        border-color: #3e8c74;
+        box-shadow: 0 0 0 2px rgba(62, 140, 116, 0.2);
+      }
+      .inline-form button {
+        background: #1e3e36;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.8rem;
+        border-radius: 60px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: "Inter", sans-serif;
+        letter-spacing: -0.2px;
+      }
+      .inline-form button:hover {
+        background: #0f2f27;
+        transform: scale(0.97);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+      .disclaimer-note {
+        font-size: 0.7rem;
+        color: #6a827a;
+        margin-top: 0.8rem;
+      }
+
+      hr {
+        margin: 1.8rem 0 1rem;
+        border: none;
+        height: 1px;
+        background: linear-gradient(to right, #e2e9e4, transparent);
+      }
+      .footer-text {
+        text-align: center;
+        font-size: 0.75rem;
+        color: #617a70;
+        margin-top: 1.8rem;
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+      }
+      a {
+        text-decoration: none;
+        color: #2c6b5c;
+        font-weight: 500;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      @media (max-width: 550px) {
+        .page {
+          padding: 1.5rem;
+        }
+        .subtitle {
+          font-size: 1.2rem;
+          max-width: 100%;
+        }
+        .cli-preview {
+          font-size: 0.75rem;
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- Logo: odd font + Latin inspiration -->
+      <div class="logo">
+        <div class="logo-text">STRATAD</div>
+        <div class="latin-micro">stratum datorum minimum</div>
+      </div>
+
+      <div class="subtitle">
+        minimal data layer for static sites, Hugo & Node
+      </div>
+
+      <div class="tagline-box">
+        <div class="witty-line">
+          ✨ lighter than a database · smarter than raw JSON ✨
+        </div>
+      </div>
+
+      <!-- witty coming soon line (two flavours) -->
+      <div style="text-align: center; margin: 0 0 0.75rem 0">
+        <p
+          style="
+            font-size: 1.05rem;
+            font-weight: 470;
+            color: #2f5146;
+            background: #eff6f1;
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 48px;
+          "
+        >
+          ⏳ coming soon — and unlike your data migrations, it won't keep you up
+          at night
+        </p>
+      </div>
+
+      <!-- feature chips -->
+      <div class="feature-grid">
+        <span class="feature-chip">🗄️ local fs</span>
+        <span class="feature-chip">📄 schema wizard</span>
+        <span class="feature-chip">⏱️ versioning</span>
+        <span class="feature-chip">💾 backup/restore</span>
+        <span class="feature-chip">📦 hugo export</span>
+        <span class="feature-chip">🔌 Node SDK</span>
+        <span class="feature-chip">🛠️ CRUD native</span>
+        <span class="feature-chip">🖥️ CLI-first</span>
+      </div>
+
+      <!-- Terminal-like preview (CLI-first soul) -->
+      <div class="cli-preview">
+        <div class="cli-line">
+          <span class="cli-prompt">$</span>
+          <span class="cli-command">stratad init my-hugo-site --with-data</span>
+        </div>
+        <div class="cli-output">
+          ✓ config.yml created &nbsp;|&nbsp; collection 'posts' scaffolded
+        </div>
+        <div class="cli-line">
+          <span class="cli-prompt">$</span>
+          <span class="cli-command">stratad wizard blog --type markdown</span>
+        </div>
+        <div class="cli-output">
+          ✨ interactive schema wizard: fields defined [title, date, tags]
+        </div>
+        <div class="cli-line">
+          <span class="cli-prompt">$</span>
+          <span class="cli-command"
+            >stratad add post "why stratad matters" --draft</span
+          >
+        </div>
+        <div class="cli-output">
+          📝 versioned entry created (rev: 1). backup snapshot saved.
+        </div>
+        <div class="cli-line">
+          <span class="cli-prompt">$</span>
+          <span class="cli-command"
+            >stratad export --hugo --output /site/data</span
+          >
+        </div>
+        <div class="cli-output">
+          ✅ Hugo data files written → posts.json, settings.json
+        </div>
+        <div class="comment" style="margin-top: 0.5rem">
+          # Stratad: typed, versioned, and completely at home in your terminal
+        </div>
+      </div>
+
+      <!-- witty bonus line + call to stay tuned -->
+      <div style="text-align: center; margin: 0.5rem 0 0rem">
+        <p style="font-size: 0.85rem; font-style: italic; color: #46685d">
+          "It's like lowdb, but with more layers (and less existential dread)."
+        </p>
+      </div>
+
+      <!-- email signup: optional but classic "coming soon" conversion -->
+      <div class="signup-area">
+        <div class="signup-title">📬 be first to know when Stratad lands</div>
+        <p style="font-size: 0.85rem; margin-bottom: 0.25rem">
+          no spam, only the good stratum.
+        </p>
+        <form id="notifyForm" class="inline-form">
+          <input
+            type="email"
+            id="subscriberEmail"
+            placeholder="hello@builder.com"
+            required
+          />
+          <button type="submit">notify me</button>
+        </form>
+        <div class="disclaimer-note">
+          core is open-source · future cloud adapters (optional / paid)
+        </div>
+      </div>
+
+      <!-- extra line: phase roadmap hint -->
+      <hr />
+      <div
+        style="
+          display: flex;
+          justify-content: center;
+          gap: 1rem;
+          flex-wrap: wrap;
+          font-size: 0.7rem;
+          font-weight: 500;
+          color: #3f6c60;
+        "
+      >
+        <span>🔧 local FS ✓</span>
+        <span>🔌 Node SDK (phase 2) 🔜</span>
+        <span>☁️ cloud adapters (phase 3) 🔜</span>
+        <span>🌐 server mode + REST API (phase 4) 🔜</span>
+      </div>
+
+      <div class="footer-text">
+        <span>⚡ CLI-first tiny data manager</span>
+        <span>· <a href="#">GitHub (coming soon)</a> ·</span>
+        <span>📄 MIT / open core</span>
+      </div>
+    </div>
+
+    <!-- tiny js for form demo with witty feedback -->
+    <script>
+      (function () {
+        const form = document.getElementById("notifyForm");
+        if (form) {
+          form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const emailInput = document.getElementById("subscriberEmail");
+            const email = emailInput.value.trim();
+            if (email && email.includes("@")) {
+              alert(
+                `✨ Thanks, ${email.split("@")[0] || "friend"}! Stratad will slide into your inbox when layers are ready. ✨`,
+              );
+              emailInput.value = "";
+            } else {
+              alert(
+                "👀 enter a real email – we promise no database complexity, just updates.",
+              );
+            }
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
